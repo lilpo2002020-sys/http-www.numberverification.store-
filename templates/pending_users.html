@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Pending Users</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #0b132b;
+    color: white;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 220px;
+    height: 100vh;
+    background: #111827;
+    position: fixed;
+    padding: 20px;
+}
+
+.sidebar h2 { color: #22c55e; }
+
+.sidebar a {
+    display: block;
+    color: #ccc;
+    padding: 10px;
+    text-decoration: none;
+    margin-top: 10px;
+}
+
+.sidebar a:hover {
+    background: #1f2937;
+    border-radius: 8px;
+}
+
+/* MAIN */
+.main {
+    margin-left: 240px;
+    padding: 20px;
+}
+
+/* 🔥 FIXED TABLE */
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    background: #1f2937;
+    border-radius: 10px;
+    overflow: hidden;
+    table-layout: fixed; /* 🔥 KEY FIX */
+}
+
+.user-table th,
+.user-table td {
+    padding: 12px;
+    text-align: left;
+}
+
+.user-table th {
+    background: #374151;
+}
+
+/* Row colors */
+.user-table tr:nth-child(even) {
+    background: #111827;
+}
+
+/* 🔥 COLUMN WIDTH FIX */
+.user-table th:nth-child(1),
+.user-table td:nth-child(1) { width: 20%; }
+
+.user-table th:nth-child(2),
+.user-table td:nth-child(2) { width: 30%; }
+
+.user-table th:nth-child(3),
+.user-table td:nth-child(3) { width: 20%; }
+
+.user-table th:nth-child(4),
+.user-table td:nth-child(4) { width: 30%; }
+
+/* 🔥 ACTION BUTTON ALIGNMENT */
+.actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* BUTTONS */
+.btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.approve { background: #22c55e; color: white; }
+.reject { background: #ef4444; color: white; }
+.ban { background: #f59e0b; color: white; }
+
+.btn:hover { opacity: 0.85; }
+
+/* SEARCH */
+input {
+    padding: 8px;
+    border-radius: 6px;
+    border: none;
+    width: 200px;
+    margin-bottom: 10px;
+}
+</style>
+
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h2>🚀 PRO Panel</h2>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/users">Users</a>
+    <a href="/numbers">Numbers</a>
+    <a href="/pending-users">Pending Users</a>
+    <a href="/export">Export CSV</a>
+    <a href="/settings">⚙️ Settings</a>
+    <a href="/whitelist">📄 Whitelist</a>
+    <a href="/change-password">Change Password</a>
+    <a href="/logout">Logout</a>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<h1>Pending Users</h1>
+
+<input id="search" placeholder="Search user..." onkeyup="searchUser()">
+
+<!-- ✅ FIXED TABLE -->
+<table id="usersTable" class="user-table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for u in users %}
+    <tr>
+        <td>{{u[0]}}</td>
+        <td>{{u[1]}}</td>
+        <td>{{u[3]}}</td>
+        <td class="actions">
+            <a href="/approve/{{u[0]}}">
+                <button class="btn approve">Approve</button>
+            </a>
+
+            <a href="/reject/{{u[0]}}">
+                <button class="btn reject">Reject</button>
+            </a>
+
+            <a href="/ban/{{u[0]}}">
+                <button class="btn ban">Ban</button>
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+</div>
+
+<script>
+function searchUser() {
+    let input = document.getElementById("search").value.toLowerCase();
+    let rows = document.querySelectorAll("#usersTable tbody tr");
+
+    rows.forEach(row => {
+        row.style.display = row.innerText.toLowerCase().includes(input) ? "" : "none";
+    });
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Users</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #0b132b;
+    color: white;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 220px;
+    height: 100vh;
+    background: #111827;
+    position: fixed;
+    padding: 20px;
+}
+
+.sidebar h2 { color: #22c55e; }
+
+.sidebar a {
+    display: block;
+    color: #ccc;
+    padding: 10px;
+    text-decoration: none;
+    margin-top: 10px;
+}
+
+.sidebar a:hover {
+    background: #1f2937;
+    border-radius: 8px;
+}
+
+/* MAIN */
+.main {
+    margin-left: 240px;
+    padding: 20px;
+}
+
+/* TABLE */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    background: #1f2937;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+th, td { padding: 12px; }
+
+th { background: #374151; }
+
+tr:nth-child(even) { background: #111827; }
+
+/* BUTTONS */
+.btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.approve { background: #22c55e; color: white; }
+.reject { background: #ef4444; color: white; }
+.ban { background: #f59e0b; color: white; }
+
+.btn:hover { opacity: 0.85; }
+
+/* SEARCH */
+input {
+    padding: 8px;
+    border-radius: 6px;
+    border: none;
+    width: 200px;
+    margin-bottom: 10px;
+}
+</style>
+
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h2>🚀 PRO Panel</h2>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/users">Users</a>
+    <a href="/numbers">Numbers</a>
+    <a href="/pending-users">Pending Users</a>
+    <a href="/export">Export CSV</a>
+    <a href="/settings">⚙️ Settings</a>
+    <a href="/whitelist">📄 Whitelist</a>
+    <a href="/change-password">Change Password</a>
+    <a href="/logout">Logout</a>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<h1>Users</h1>
+
+<input id="search" placeholder="Search user..." onkeyup="searchUser()">
+
+<table id="usersTable">
+<tr>
+<th>ID</th>
+<th>Username</th>
+<th>Status</th>
+<th>Actions</th>
+</tr>
+
+{% for u in users %}
+<tr>
+<td>{{u[0]}}</td>
+<td>{{u[1]}}</td>
+<td>{{u[3]}}</td>
+<td>
+<a href="/approve/{{u[0]}}">
+    <button class="btn approve">Approve</button>
+</a>
+
+<a href="/reject/{{u[0]}}">
+    <button class="btn reject">Reject</button>
+</a>
+
+<a href="/ban/{{u[0]}}">
+    <button class="btn ban">Ban</button>
+</a>
+</td>
+</tr>
+{% endfor %}
+</table>
+
+</div>
+
+<script>
+function searchUser() {
+    let input = document.getElementById("search").value.toLowerCase();
+    let rows = document.querySelectorAll("#usersTable tr");
+
+    rows.forEach((row, i) => {
+        if (i === 0) return;
+        row.style.display = row.innerText.toLowerCase().includes(input) ? "" : "none";
+    });
+}
+</script>
+
+</body>
+</html>

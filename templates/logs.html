@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Logs - PRO Panel</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: #0b132b;
+            color: white;
+        }
+
+        .container {
+            padding: 30px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            color: white;
+        }
+
+        .btn-back {
+            background: #3a86ff;
+        }
+
+        .btn-logout {
+            background: red;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #1c2541;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background: #3a506b;
+        }
+
+        tr:nth-child(even) {
+            background: #16213e;
+        }
+
+        tr:hover {
+            background: #2a3f5f;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="top-bar">
+        <h1>📜 System Logs</h1>
+
+        <div>
+            <a href="/dashboard" class="btn btn-back">⬅ Back</a>
+            <a href="/logout" class="btn btn-logout">Logout</a>
+        </div>
+    </div>
+
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Action</th>
+            <th>Time</th>
+        </tr>
+
+        {% for log in logs %}
+        <tr>
+            <td>{{ log[0] }}</td>
+            <td>{{ log[1] }}</td>
+            <td>{{ log[2] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</div>
+
+</body>
+</html>

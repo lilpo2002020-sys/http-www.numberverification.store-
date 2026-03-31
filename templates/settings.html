@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Settings</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #0b132b;
+    color: white;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 220px;
+    height: 100vh;
+    background: #111827;
+    position: fixed;
+    padding: 20px;
+}
+
+.sidebar h2 { color: #22c55e; }
+
+.sidebar a {
+    display: block;
+    color: #ccc;
+    padding: 10px;
+    text-decoration: none;
+    margin-top: 10px;
+}
+
+.sidebar a:hover {
+    background: #1f2937;
+    border-radius: 8px;
+}
+
+/* MAIN */
+.main {
+    margin-left: 240px;
+    padding: 20px;
+}
+
+/* CARD */
+.card {
+    background: #1f2937;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    max-width: 500px;
+}
+
+/* INPUT */
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 6px;
+    border: none;
+}
+
+/* BUTTON */
+button {
+    margin-top: 10px;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.add { background: #22c55e; }
+.clear { background: #ef4444; }
+
+/* TABLE */
+table {
+    width: 100%;
+    margin-top: 10px;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+th { background: #374151; }
+
+tr:nth-child(even) {
+    background: #111827;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="sidebar">
+    <h2>🚀 PRO Panel</h2>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/users">Users</a>
+    <a href="/numbers">Numbers</a>
+    <a href="/pending-users">Pending Users</a>
+    <a href="/export">Export CSV</a>
+    <a href="/settings">⚙️ Settings</a>
+    <a href="/whitelist">📄 Whitelist</a>
+    <a href="/change-password">Change Password</a>
+    <a href="/logout">Logout</a>
+</div>
+
+<div class="main">
+
+<h1>⚙️ Settings Panel</h1>
+
+{% if message %}
+<p>{{message}}</p>
+{% endif %}
+
+<!-- ADD ADMIN -->
+<div class="card">
+<h2>➕ Add Admin</h2>
+
+<form method="POST">
+    <input name="username" placeholder="Username" required>
+    <input name="password" placeholder="Password" required>
+    
+    <select name="role">
+        <option value="staff">Staff</option>
+        <option value="super">Super Admin</option>
+    </select>
+
+    <button class="add">Add Admin</button>
+</form>
+</div>
+
+<!-- ADMIN LIST -->
+<div class="card">
+<h2>👥 Admins</h2>
+
+<table>
+<tr><th>Username</th><th>Role</th></tr>
+
+{% for a in admins %}
+<tr>
+<td>{{a[0]}}</td>
+<td>{{a[1]}}</td>
+</tr>
+{% endfor %}
+</table>
+</div>
+
+<!-- LOGS -->
+<div class="card">
+<h2>📜 Recent Logs</h2>
+
+<table>
+<tr><th>Action</th><th>Time</th></tr>
+
+{% for log in logs %}
+<tr>
+<td>{{log[0]}}</td>
+<td>{{log[1]}}</td>
+</tr>
+{% endfor %}
+</table>
+
+<a href="/clear-logs">
+<button class="clear">Clear Logs</button>
+</a>
+
+</div>
+
+</div>
+
+</body>
+</html>

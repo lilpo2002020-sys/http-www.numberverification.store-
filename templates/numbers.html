@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Numbers</title>
+
+<style>
+.tab-buttons {
+    display: flex;
+    justify-content: center;   /* CENTER horizontally */
+    gap: 10px;
+    margin-bottom: 15px;
+}
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #0b132b;
+    color: white;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 220px;
+    height: 100vh;
+    background: #111827;
+    position: fixed;
+    padding: 20px;
+}
+
+.sidebar h2 { color: #22c55e; }
+
+.sidebar a {
+    display: block;
+    color: #ccc;
+    padding: 10px;
+    text-decoration: none;
+    margin-top: 10px;
+}
+
+.sidebar a:hover {
+    background: #1f2937;
+    border-radius: 8px;
+}
+
+/* MAIN */
+.main {
+    margin-left: 240px;
+    padding: 20px;
+}
+
+/* TABLE */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    background: #1f2937;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background: #374151;
+}
+
+tr:nth-child(even) {
+    background: #111827;
+}
+
+/* BUTTONS */
+button {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-right: 5px;
+    background: #374151;
+    color: white;
+}
+
+button:hover {
+    background: #22c55e;
+}
+
+/* SEARCH */
+input {
+    padding: 8px;
+    border-radius: 6px;
+    border: none;
+    width: 250px;
+    margin-bottom: 10px;
+}
+
+/* CARD */
+.card {
+    background: #1f2937;
+    padding: 20px;
+    border-radius: 12px;
+    margin-top: 20px;
+}
+</style>
+
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h2>🚀 PRO Panel</h2>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/users">Users</a>
+    <a href="/numbers">Numbers</a>
+    <a href="/pending-users">Pending Users</a>
+    <a href="/export">Export CSV</a>
+    <a href="/settings">⚙️ Settings</a>
+    <a href="/whitelist">📄 Whitelist</a>
+    <a href="/change-password">Change Password</a>
+    <a href="/logout">Logout</a>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<h1>📄 Verified Numbers</h1>
+
+<!-- BUTTONS -->
+<div class="tab-buttons">
+    <button type="button" onclick="showTab('daily')">Daily</button>
+    <button type="button" onclick="showTab('weekly')">Weekly</button>
+    <button type="button" onclick="showTab('monthly')">Monthly</button>
+</div>
+
+<!-- SEARCH -->
+<input id="search" placeholder="Search number or user..." onkeyup="searchTable()">
+
+<!-- DAILY -->
+<div id="daily" class="tab">
+    <table>
+        <tbody>
+        <tr>
+            <th>Number</th>
+            <th>User</th>
+            <th>Time</th>
+        </tr>
+
+        {% for n in daily %}
+        <tr>
+            <td>{{ n[0] }}</td>
+            <td>{{ n[1] }}</td>
+            <td>{{ n[2] }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- WEEKLY -->
+<div id="weekly" class="tab" style="display:none;">
+    <table>
+        <tbody>
+        <tr>
+            <th>Number</th>
+            <th>User</th>
+            <th>Time</th>
+        </tr>
+
+        {% for n in weekly %}
+        <tr>
+            <td>{{ n[0] }}</td>
+            <td>{{ n[1] }}</td>
+            <td>{{ n[2] }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- MONTHLY -->
+<div id="monthly" class="tab" style="display:none;">
+    <table>
+        <tbody>
+        <tr>
+            <th>Number</th>
+            <th>User</th>
+            <th>Time</th>
+        </tr>
+
+        {% for n in monthly %}
+        <tr>
+            <td>{{ n[0] }}</td>
+            <td>{{ n[1] }}</td>
+            <td>{{ n[2] }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- CHARTS -->
+<div class="card">
+<h2>📊 Daily Activity</h2>
+<canvas id="dailyChart"></canvas>
+</div>
+
+<div class="card">
+<h2>📈 Weekly Growth</h2>
+<canvas id="weeklyChart"></canvas>
+</div>
+
+<div class="card">
+<h2>📈 Insights</h2>
+<p>Growth: {{growth}}%</p>
+<p>Trend: {{trend}}</p>
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+// TAB SWITCH
+function showTab(tab) {
+    document.getElementById("daily").style.display = "none";
+    document.getElementById("weekly").style.display = "none";
+    document.getElementById("monthly").style.display = "none";
+
+    document.getElementById(tab).style.display = "block";
+}
+
+// SEARCH (works on visible tab only)
+function searchTable() {
+    let input = document.getElementById("search").value.toLowerCase();
+    let visibleTable = document.querySelector(".tab:not([style*='display: none']) tbody");
+    let rows = visibleTable.querySelectorAll("tr");
+
+    rows.forEach((row, index) => {
+        if (index === 0) return; // skip header
+        row.style.display = row.innerText.toLowerCase().includes(input) ? "" : "none";
+    });
+}
+
+// CHARTS
+new Chart(document.getElementById("dailyChart"), {
+    type: "line",
+    data: {
+        labels: {{daily_labels | tojson}},
+        datasets: [{
+            label: "Daily Numbers",
+            data: {{daily_values | tojson}},
+            borderWidth: 2,
+            fill: true
+        }]
+    }
+});
+
+new Chart(document.getElementById("weeklyChart"), {
+    type: "bar",
+    data: {
+        labels: {{weekly_labels | tojson}},
+        datasets: [{
+            label: "Weekly Growth",
+            data: {{weekly_values | tojson}},
+            borderWidth: 1
+        }]
+    }
+});
+</script>
+
+</body>
+</html>
